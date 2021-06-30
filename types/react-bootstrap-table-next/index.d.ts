@@ -58,6 +58,8 @@ declare enum FilterComparator {
  */
 export type SortOrder = 'asc' | 'desc';
 
+export type ColumnSortValue<R, C = any> = (cell: C, row: R) => number | string | boolean | React.ReactText;
+
 export type ColumnSortFunc<T, E extends keyof T = any> = (
     a: T[E],
     b: T[E],
@@ -111,6 +113,12 @@ export type ColumnFormatter<R, E = any, C = any> = (
     formatExtraData: E,
 ) => JSX.Element | string | boolean | React.ReactText;
 
+export interface ValidationResult {
+    async?: boolean;
+    valid?: boolean;
+    message?: string;
+}
+
 export interface ColumnDescription<T extends object = any, E = any> {
     /**
      * If set the column will not use cell values
@@ -129,6 +137,7 @@ export interface ColumnDescription<T extends object = any, E = any> {
         | React.CSSProperties
         | ((cell: T[keyof T], row: T, rowIndex: number, colIndex: number) => React.CSSProperties);
     sort?: boolean;
+    sortValue?: ColumnSortValue<T>;
     sortFunc?: ColumnSortFunc<T>;
     sortCaret?: ColumnSortCaret<T, E>;
     searchable?: boolean;
@@ -137,7 +146,7 @@ export interface ColumnDescription<T extends object = any, E = any> {
 
     tooltipDataField?: string;
     editable?: boolean | ((cell: any, row: T, rowIndex: number, colIndex: number) => boolean);
-    editor?: { type: string; options?: [{ value: string; label: string }] };
+    editor?: { type: string; options?: Array<{ value: string; label: string }> };
     filter?: boolean | TableColumnFilterProps;
     filterValue?: (cell: T[keyof T], row: T) => string;
     headerAlign?: CellAlignment;
@@ -158,6 +167,7 @@ export interface ColumnDescription<T extends object = any, E = any> {
     footerTitle?: boolean;
     footerEvents?: { onClick: (e: any, column: ColumnDescription<T, E>, columnIndex: number) => void };
     footerAlign?: CellAlignment | ((column: ColumnDescription<T, E>, colIndex: number) => CellAlignment);
+    validator?: (newValue: any, row: T, column: ColumnDescription<T, E>, done: (result?: ValidationResult) => any) => boolean | ValidationResult;
 
     /**
      * CSV Column options only used with the toolkit provider
@@ -396,7 +406,7 @@ export interface SelectRowProps<T> {
     nonSelectable?: number[];
     nonSelectableStyle?: ((row: T, rowIndex: number) => CSSProperties | undefined) | CSSProperties;
     nonSelectableClasses?: ((row: T, rowIndex: number) => string | undefined) | string;
-    bgColor?: (row: T, rowIndex: number) => string | string;
+    bgColor?: ((row: T, rowIndex: number) => string) | string;
     hideSelectColumn?: boolean;
     selectionRenderer?: (options: {
         checked: boolean;

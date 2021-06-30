@@ -355,7 +355,7 @@ declare namespace jsrsasign.KJUR.jws {
          */
         function verifyJWT(
             sJWT: string,
-            key: string,
+            key: string | RSAKey,
             acceptField?: {
                 alg?: string[];
                 aud?: string[];
@@ -363,6 +363,7 @@ declare namespace jsrsasign.KJUR.jws {
                 jti?: string;
                 sub?: string[];
                 verifyAt?: string | number;
+                gracePeriod?: number;
             },
         ): boolean;
 

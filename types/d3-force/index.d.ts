@@ -1,4 +1,4 @@
-// Type definitions for D3JS d3-force module 2.1
+// Type definitions for D3JS d3-force module 3.0
 // Project: https://github.com/d3/d3-force/, https://d3js.org/d3-force
 // Definitions by: Tom Wanzek <https://github.com/tomwanzek>
 //                 Alex Ford <https://github.com/gustavderdrache>
@@ -7,7 +7,7 @@
 //                 Nathan Bierema <https://github.com/Methuselah96>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-// Last module patch version validated against: 2.1.1
+// Last module patch version validated against: 3.0.0
 
 // -----------------------------------------------------------------------
 // Force Simulation
@@ -632,10 +632,10 @@ export interface ForceLink<NodeDatum extends SimulationNodeDatum, LinkDatum exte
      * as when the nodes or links change, being passed the node, the zero-based index of the node in the node array, and the node array.
      *
      * @param id A node id accessor function which is invoked for each node in the simulation,
-     * being passed the node, the zero-based index of the node in the node array, and the node array. It returns a string to represent the node id which can be used
+     * being passed the node, the zero-based index of the node in the node array, and the node array. It returns a string or number to represent the node id which can be used
      * for matching link source and link target strings during the ForceLink initialization.
      */
-    id(id: (node: NodeDatum, i: number, nodesData: NodeDatum[]) => string): this;
+    id(id: (node: NodeDatum, i: number, nodesData: NodeDatum[]) => (string | number)): this;
 
     /**
      * Return the current distance accessor, which defaults to implying a default distance of 30.
